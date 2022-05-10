@@ -1,50 +1,34 @@
 class Test {
     public static void main(String[] args) {
-        System.out.println(longestPalindrome("hehkk"));
+        System.out.println(convert("PAYPALISHIRING", 3));
     }
-
-    public static String longestPalindrome(String s) {
+    
+    public static String convert(String s, int numRows) {
         int sLen = s.length();
-
-        boolean[][] dp = new boolean[sLen][sLen];
-        for (int i = 0; i < sLen; ++i) {
-            for (int j = 0; j < 0; ++j) {
-                dp[i][j] = false;
+        StringBuilder result = new StringBuilder(sLen);
+        
+        int currentRow      = 0;
+        int currentIndex    = currentRow;
+        int maxStep         = numRows * 2 - 2;
+        int step            = 0;
+        
+        maxStep = (maxStep == 0) ? 1 : maxStep; // 1 Row Exception
+        
+        for (int i = 0; i < sLen; i++) {
+            if (step == 0) step = maxStep;      // Edge Rows
+            result.append(s.charAt(currentIndex));
+            
+            if (currentIndex + step < sLen) {
+                currentIndex += step;
+                step = maxStep - step;
+            }
+            else {
+                currentRow++;
+                currentIndex = currentRow;
+                step = maxStep - currentRow * 2;
             }
         }
-
-        // Len = 1
-        int maxLen = 1, start = 0;
-
-        for (int i = 0; i < sLen; ++i ) {
-            dp[i][i] = true;
-        }
-
-        // Len = 2
-        for (int i = 0; i < sLen-1; ++i) {
-            if (s.charAt(i) == s.charAt(i+1)) {
-                dp[i][i+1] = true;
-                maxLen = 2;
-                start = i;
-            }
-        }
-
-        // Len > 2
-        for (int k = 3; k <= sLen; ++k) {
-            for (int i = 0; i < sLen-k+1; ++i) {
-                int j = i + k - 1;
-
-                if (dp[i+1][j-1] && s.charAt(i) == s.charAt(j)) {
-                    dp[i][j] = true;
-
-                    if (k > maxLen) {
-                        maxLen = k;
-                        start = i;
-                    }
-                }
-            }
-        }
-
-        return s.substring(start, start+maxLen);
+        
+        return result.toString();
     }
 }
