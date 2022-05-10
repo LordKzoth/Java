@@ -1,30 +1,50 @@
 class Test {
     public static void main(String[] args) {
-        System.out.println(lengthOfLongestSubstring("abcabcbb"));
+        System.out.println(longestPalindrome("hehkk"));
     }
 
-    public static int lengthOfLongestSubstring(String s) {
-        int max = 0;
-        
-        String currentString = "";
-        for (int i = 0; i < s.length(); ++i) {
-            char currentChar = s.charAt(i);
+    public static String longestPalindrome(String s) {
+        int sLen = s.length();
 
-            if (currentString.contains(Character.toString(currentChar))) {
-                if (currentString.length() > max) {
-                    max = currentString.length();
-                }
-
-                currentString = currentString.substring(currentString.indexOf(currentChar) + 1) + currentChar;
-            } else {
-                currentString = currentString + currentChar;
+        boolean[][] dp = new boolean[sLen][sLen];
+        for (int i = 0; i < sLen; ++i) {
+            for (int j = 0; j < 0; ++j) {
+                dp[i][j] = false;
             }
         }
 
-        if (currentString.length() > max) {
-            max = currentString.length();
+        // Len = 1
+        int maxLen = 1, start = 0;
+
+        for (int i = 0; i < sLen; ++i ) {
+            dp[i][i] = true;
         }
-        
-        return max;
+
+        // Len = 2
+        for (int i = 0; i < sLen-1; ++i) {
+            if (s.charAt(i) == s.charAt(i+1)) {
+                dp[i][i+1] = true;
+                maxLen = 2;
+                start = i;
+            }
+        }
+
+        // Len > 2
+        for (int k = 3; k <= sLen; ++k) {
+            for (int i = 0; i < sLen-k+1; ++i) {
+                int j = i + k - 1;
+
+                if (dp[i+1][j-1] && s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = true;
+
+                    if (k > maxLen) {
+                        maxLen = k;
+                        start = i;
+                    }
+                }
+            }
+        }
+
+        return s.substring(start, start+maxLen);
     }
 }
